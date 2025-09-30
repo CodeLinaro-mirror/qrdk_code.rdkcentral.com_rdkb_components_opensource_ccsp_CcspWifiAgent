@@ -536,6 +536,8 @@ int get_ovsdb_interworking_config(char *vap_name, wifi_InterworkingElement_t *in
     strncpy(interworking->hessid, pcfg->hessid, sizeof(interworking->hessid)-1);
     interworking->venueGroup = pcfg->venue_group;
     interworking->venueType = pcfg->venue_type;
+
+    free(pcfg);
     return 0;
 }
 void print_ovsdb_interworking_config ()
@@ -726,6 +728,8 @@ int get_ovsdb_gas_config(UINT advertisement_id, wifi_GASConfiguration_t *gas_inf
     gas_info->ComeBackDelay = pcfg->comeback_delay;
     gas_info->ResponseBufferingTime = pcfg->response_buffering_time;
     gas_info->QueryResponseLengthLimit = pcfg->query_responselength_limit;
+
+    free(pcfg);
     return 0;
 }
 
@@ -1422,7 +1426,8 @@ int wifi_db_get_harvester_config(PCOSA_DML_WIFI_HARVESTER pHarvester)
     pHarvester->uActiveMsmtPktSize = gcfg->wifi_active_msmt_pktsize;
     pHarvester->uActiveMsmtNumberOfSamples = gcfg->wifi_active_msmt_num_samples;
     pHarvester->bINSTClientEnabled = gcfg->inst_wifi_client_enabled;
-  
+
+    free(gcfg);
     return RETURN_OK;
 }
 

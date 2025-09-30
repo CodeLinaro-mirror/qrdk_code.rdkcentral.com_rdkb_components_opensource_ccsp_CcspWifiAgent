@@ -85,7 +85,7 @@
 #include "../sbapi/wifi_webconfig.h"
 #endif
 
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
 #include "ccsp_base_api.h"
 #include "messagebus_interface_helper.h"
 
@@ -1252,7 +1252,7 @@ void CosaDmlWiFi_UpdateMfCfg( void )
                                         pSLinkEntry = AnscQueueGetNextEntry(pSLinkEntry);
                                 }
 
-                                #if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_)  && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+                                #if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_)  && !defined(_COSA_BCM_ARM_)  && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
                                         CosaDmlWiFiApMfGetCfg( NULL, pWifiSsid->SSID.Cfg.SSID, pWifiApMf );
                                 #else
                                         CosaDmlWiFiApMfGetCfg( NULL, pWifiSsid->SSID.StaticInfo.Name, pWifiApMf );
@@ -1860,7 +1860,7 @@ WiFiRegion_GetParamStringValue
     /* check the parameter name and return the corresponding value */
     if (strcmp(ParamName, "Code") == 0)
     {
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
         rc = strcpy_s(pValue, *pulSize, pWifiRegion->Code.ActiveValue);
         ERR_CHK(rc);
 #else
@@ -1874,7 +1874,7 @@ WiFiRegion_GetParamStringValue
     return -1;
 }
 
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
 #define BS_SOURCE_WEBPA_STR "webpa"
 #define BS_SOURCE_RFC_STR "rfc"
 #define PARTNER_ID_LEN 64
@@ -1924,7 +1924,7 @@ WiFiRegion_SetParamStringValue
     UNREFERENCED_PARAMETER(hInsContext);
     errno_t rc = -1;
 
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
     char * requestorStr = getRequestorString();
     char * currentTime = getTime();
 
@@ -1938,7 +1938,7 @@ WiFiRegion_SetParamStringValue
 #endif
     if (strcmp(ParamName, "Code") == 0)
     {
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
                 // If the requestor is RFC but the param was previously set by webpa, do not override it.
                 if ((strcmp(requestorStr, BS_SOURCE_RFC_STR) == 0) && (strcmp(pWifiRegion->Code.UpdateSource, BS_SOURCE_WEBPA_STR) == 0))
                 {
@@ -1950,7 +1950,7 @@ WiFiRegion_SetParamStringValue
 		{
 			if ( ANSC_STATUS_SUCCESS == SetWiFiRegionCode( pString ) )
 			{
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
 				rc = strcpy_s( pWifiRegion->Code.ActiveValue, sizeof(pWifiRegion->Code.ActiveValue), pString );
 				ERR_CHK(rc);
 				rc = strcpy_s( pWifiRegion->Code.UpdateSource, sizeof(pWifiRegion->Code.UpdateSource), requestorStr );
@@ -2968,7 +2968,7 @@ Radio_GetParamStringValue
     PCOSA_DATAMODEL_WIFI            pMyObject     = (PCOSA_DATAMODEL_WIFI)g_pCosaBEManager->hWifi;
     errno_t                         rc            = -1;
     
-    #if !defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_MIPS_)
+    #if !defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_MIPS_) || defined(_COSA_QCA_ARM_)
         int radioIndex=pWifiRadio->Radio.Cfg.InstanceNumber - 1;
     #endif
     /* check the parameter name and return the corresponding value */
@@ -7417,7 +7417,7 @@ SSID_Validate
             continue;
         }
 
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         if (strcmp(pWifiSsid->SSID.Cfg.SSID, pWifiSsid2->SSID.Cfg.SSID) == 0)
         {
             rc = strcpy_s(pReturnParamName, *puLength, "SSID");
@@ -8253,7 +8253,7 @@ AccessPoint_DelEntry
         pWifiAp->AP.Cfg.bEnabled = FALSE;
         pWifiAp->AP.Cfg.SSID[0]  = 0;
         
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         CosaDmlWiFiApSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->AP.Cfg);
 #else
         CosaDmlWiFiApSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->AP.Cfg);
@@ -8742,7 +8742,7 @@ AccessPoint_GetParamUlongValue
     
     if (pSLinkEntry)
     {
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         CosaDmlWiFiApGetInfo((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->AP.Info);
 #else
         CosaDmlWiFiApGetInfo((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->AP.Info);
@@ -10189,7 +10189,7 @@ AccessPoint_Commit
             CcspTraceInfo(("WiFi AP -- apply the changes...\n"));
         }  
         /*Set to backend*/
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_IPQ_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_IPQ_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         returnStatus = CosaDmlWiFiApSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->AP.Cfg);
 #else
         returnStatus = CosaDmlWiFiApSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->AP.Cfg);
@@ -10334,7 +10334,7 @@ AccessPoint_Rollback
     {
         pWifiSsid = pLinkObjSsid->hContext;
         
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         CosaDmlWiFiApGetEntry((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->AP);
 #else
         CosaDmlWiFiApGetEntry((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->AP);
@@ -12773,7 +12773,7 @@ Security_Commit
     {
         pWifiSsid = pSSIDLinkObj->hContext;
         
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         return CosaDmlWiFiApSecSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, pWifiApSecCfg);
 #else
         return CosaDmlWiFiApSecSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, pWifiApSecCfg);
@@ -12850,7 +12850,7 @@ Security_Rollback
     {
         pWifiSsid = pLinkObjSsid->hContext;
         
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         CosaDmlWiFiApSecGetEntry((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->SEC);
 #else
         CosaDmlWiFiApSecGetEntry((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->SEC);
@@ -13896,7 +13896,7 @@ WPS_Commit
     if ( pSLinkEntry )
     {
         pWifiSsid = pSSIDLinkObj->hContext;
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         return CosaDmlWiFiApWpsSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->WPS.Cfg);
 #else
         return CosaDmlWiFiApWpsSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->WPS.Cfg);
@@ -13968,7 +13968,7 @@ WPS_Rollback
     if ( pSLinkEntrySsid )
     {
         pWifiSsid = pLinkObjSsid->hContext;
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         CosaDmlWiFiApWpsGetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->WPS.Cfg);
 #else
         CosaDmlWiFiApWpsGetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->WPS.Cfg);
@@ -16295,7 +16295,7 @@ MacFilter_Commit
     if ( pSLinkEntry )
     {
         pWifiSsid = pSSIDLinkObj->hContext;
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         return CosaDmlWiFiApMfSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->MF);
 #else
         return CosaDmlWiFiApMfSetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->MF);
@@ -16370,7 +16370,7 @@ MacFilter_Rollback
     if ( pSLinkEntrySsid )
     {
         pWifiSsid = pLinkObjSsid->hContext;
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_)  && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_)  && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
         CosaDmlWiFiApMfGetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, &pWifiAp->MF);
 #else
         CosaDmlWiFiApMfGetCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, &pWifiAp->MF);
@@ -18669,7 +18669,7 @@ AssociatedDevice1_Synchronize
         pWifiAp->AssocDevices = CosaDmlWiFiApGetAssocDevices
         (
             (ANSC_HANDLE)pMyObject->hPoamWiFiDm, 
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
             pWifiSsid->SSID.Cfg.SSID, 
 #else
             pWifiSsid->SSID.StaticInfo.Name, 
@@ -20158,7 +20158,7 @@ Authenticator_Commit
     {
         pWifiSsid = pSSIDLinkObj->hContext;
 
-#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_)
+#if !defined(_COSA_INTEL_USG_ATOM_) && !defined(_COSA_BCM_MIPS_) && !defined(_COSA_BCM_ARM_) && !defined(_COSA_QCA_ARM_)
         return CosaDmlWiFiApEapAuthCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.Cfg.SSID, pWifiApSecCfg);
 #else
         return CosaDmlWiFiApEapAuthCfg((ANSC_HANDLE)pMyObject->hPoamWiFiDm, pWifiSsid->SSID.StaticInfo.Name, pWifiApSecCfg);
@@ -20232,6 +20232,8 @@ MacFiltTab_AddEntry
     rc = sprintf_s(pMacFilt->Alias, sizeof(pMacFilt->Alias), "MacFilterTable%lu", pWiFiAP->ulMacFilterNextInsNum);
     if(rc < EOK)
     {
+        AnscFreeMemory( pMacFilt);
+        pMacFilt = NULL;
         ERR_CHK(rc);
         return NULL;
     }

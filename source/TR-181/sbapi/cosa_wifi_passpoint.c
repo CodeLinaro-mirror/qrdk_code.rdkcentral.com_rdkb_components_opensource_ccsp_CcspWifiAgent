@@ -184,7 +184,8 @@ static long readFileToBuffer(const char *fileName, char **buffer)
        fclose(infile);
        return 0;
     }
-    fclose(infile);
+    if(infile != NULL)
+       fclose(infile);
 
     return numbytes;
 }

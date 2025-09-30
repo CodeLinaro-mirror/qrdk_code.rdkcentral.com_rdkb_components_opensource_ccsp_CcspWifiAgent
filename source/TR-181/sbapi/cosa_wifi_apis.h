@@ -148,7 +148,7 @@ _COSA_DML_WIFI_ACTIVE_MSMT_STEP_FULL
 
 typedef struct _COSA_DML_WIFI_ACTIVE_MSMT_STEP_FULL COSA_DML_WIFI_ACTIVE_MSMT_STEP_FULL, *PCOSA_DML_WIFI_ACTIVE_MSMT_STEP_FULL;
 
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
 typedef  struct
 _COSA_BOOTSTRAP_STR
 {
@@ -2372,7 +2372,7 @@ void CosaDmlWifi_getDppConfigFromPSM(PANSC_HANDLE phContext);
 ANSC_STATUS
 CosaDmlWiFi_setStatus(ULONG status, PANSC_HANDLE pMyObject);
 
-#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_BCM_MIPS_) || defined(_XB6_PRODUCT_REQ_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
 ANSC_STATUS UpdateJsonParam
         (
                 char*                       pKey,
@@ -2450,7 +2450,7 @@ ANSC_STATUS CosaDmlWiFi_ParseEasyConnectEnrolleeChannels(UINT apIndex, PCOSA_DML
 char *CosaDmlWiFi_ChannelsListToString(PCOSA_DML_WIFI_DPP_STA_CFG pWifiDppSta, char *string);
 INT wifi_getApWpsEnable(INT apIndex, BOOL *output_bool);
 
-#if !defined (_COSA_BCM_MIPS_)&& !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_)
+#if !defined (_COSA_BCM_MIPS_)&& !defined(_COSA_BCM_ARM_) && !defined(_PLATFORM_TURRIS_) && !defined(_COSA_QCA_ARM_)
     INT wifi_setApEnableOnLine(INT index, BOOL status);
     INT wifi_setRouterEnable(INT radioIndex, BOOL output_bool);
     INT wifi_getApEnableOnLine(INT index, BOOL *status);

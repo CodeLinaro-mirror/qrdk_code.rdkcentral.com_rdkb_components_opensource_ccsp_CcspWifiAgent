@@ -247,7 +247,7 @@ COSA_Init
         g_pCosaBEManager->hCosaPluginInfo = pPlugInfo;
 
         g_pCosaBEManager->Initialize   ((ANSC_HANDLE)g_pCosaBEManager);
-#if defined(_COSA_INTEL_USG_ATOM_) || defined(_COSA_BCM_MIPS_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_)
+#if defined(_COSA_INTEL_USG_ATOM_) || defined(_COSA_BCM_MIPS_) || defined(_COSA_BCM_ARM_) || defined(_PLATFORM_TURRIS_) || defined(_COSA_QCA_ARM_)
 	AssociatedDevice_callback_register();
 #endif      
 #if defined (_HUB4_PRODUCT_REQ_) && !defined(_SR300_PRODUCT_REQ_)

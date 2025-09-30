@@ -62,6 +62,7 @@ struct scheduler * scheduler_init(void)
         sched->timer_list = queue_create();
         if (sched->timer_list == NULL) {
             queue_destroy(sched->timer_list);
+            free(sched->high_priority_timer_list);
             free(sched);
             pthread_mutex_destroy(&sched->lock);
             return NULL;

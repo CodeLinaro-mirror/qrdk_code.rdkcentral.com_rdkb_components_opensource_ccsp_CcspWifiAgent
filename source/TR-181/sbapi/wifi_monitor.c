@@ -1062,6 +1062,7 @@ int upload_client_telemetry_data(void *arg)
         // see if list has changed
 #ifdef WIFI_HAL_VERSION_3
         BOOL enableRadioDetailStats[MAX_NUM_RADIOS] = {FALSE};
+	unsigned int itr = 0;
 #else
         bool enable24detailstats = false;
         bool enable5detailstats = false;
@@ -5827,7 +5828,7 @@ int associated_devices_diagnostics(void *arg)
     static wifi_associated_dev3_t *dev_array = NULL;
     static unsigned int num_devs = 0;
 
-#if !defined(_CBR_PRODUCT_REQ_) && !defined(_HUB4_PRODUCT_REQ_) && !defined(DUAL_CORE_XB3) && !(defined (_XB7_PRODUCT_REQ_) && defined (_COSA_BCM_ARM_))
+#if !defined(_CBR_PRODUCT_REQ_) && !defined(_HUB4_PRODUCT_REQ_) && !defined(DUAL_CORE_XB3) && !(defined (_XB7_PRODUCT_REQ_) && defined (_COSA_BCM_ARM_)) && !defined(_COSA_QCA_ARM_)
     unsigned int i = 0;
     static unsigned int current_dev = 0;
     static int last_valid_dev = 0;

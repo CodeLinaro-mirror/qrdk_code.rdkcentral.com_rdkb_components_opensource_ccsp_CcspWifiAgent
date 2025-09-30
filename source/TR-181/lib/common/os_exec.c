@@ -59,7 +59,7 @@ bool os_cmd_exec_xv(char **buffer, int *len, int *exit_code, int flags, char *fm
     char    *cmd2 = NULL;
     char    *command = cmd1;
     int     cmdlen;
-    FILE    *fp;
+    FILE    *fp = NULL;
     int     ret = 0;
     int     xcode = 0;
     char    *buf = NULL;
@@ -159,6 +159,7 @@ error:
     }
     LOG_SEVERITY(errlevel, "exit=%d err=%d(%s) '%s'", xcode, errno, strerror(errno), command);
     if (buf) free(buf);
+    if (fp) pclose(fp);
     return false;
 }
 
