@@ -989,6 +989,10 @@ int update_tr181_config_param(int ap_index, struct hostapd_bss_config *bss, PCOS
     }
     //dtim_period
     bss->dtim_period = pWifiRadioFull->Cfg.DTIMInterval;
+    //bsshotspot
+    bss->bssHotspot = pWifiAp->AP.Cfg.BssHotSpot;
+    //wmmNoAck
+    bss->wmmNoAck = pWifiAp->AP.Cfg.WmmNoAck;
     //max_num_sta
     bss->max_num_sta = pWifiAp->AP.Cfg.BssMaxNumSta;
     //macaddr_acl

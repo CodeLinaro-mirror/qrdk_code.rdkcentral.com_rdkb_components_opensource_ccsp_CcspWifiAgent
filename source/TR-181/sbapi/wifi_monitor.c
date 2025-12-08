@@ -1094,13 +1094,13 @@ int upload_client_telemetry_data(void *arg)
                 switch (radioOperation->band)
                 {
                     case WIFI_FREQUENCY_2_4_BAND:
-                        wifi_dbg_print(1, "%s:%d: client detailed stats collection for 2.4GHz radio set to %s\n", __func__, __LINE__, 
+                        wifi_dbg_print(1, "%s:%d: client detailed stats collection for 2.4GHz radio%d set to %s\n", __func__, __LINE__,
                                 radioIndex, (enableRadioDetailStats[radioIndex] == TRUE)?"enabled":"disabled");
                     case WIFI_FREQUENCY_5_BAND:
-                        wifi_dbg_print(1, "%s:%d: client detailed stats collection for 5GHz radio set to %s\n", __func__, __LINE__, 
+                        wifi_dbg_print(1, "%s:%d: client detailed stats collection for 5GHz radio%d set to %s\n", __func__, __LINE__,
                                 radioIndex, (enableRadioDetailStats[radioIndex] == TRUE)?"enabled":"disabled");
                     case WIFI_FREQUENCY_6_BAND:
-                        wifi_dbg_print(1, "%s:%d: client detailed stats collection for 6GHz radio set to %s\n", __func__, __LINE__, 
+                        wifi_dbg_print(1, "%s:%d: client detailed stats collection for 6GHz radio%d set to %s\n", __func__, __LINE__,
                                 radioIndex, (enableRadioDetailStats[radioIndex] == TRUE)?"enabled":"disabled");
                     default:
                         break;

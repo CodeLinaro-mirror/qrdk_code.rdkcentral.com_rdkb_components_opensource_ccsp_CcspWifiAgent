@@ -63,7 +63,11 @@ int wifidb_update_wifi_macfilter_config(unsigned int apIndex);
 
 int wifidb_wfd = 0;
 
+#if defined (_COSA_QCA_ARM_)
+#define WIFI_MAX_VAP 24
+#else
 #define WIFI_MAX_VAP 16
+#endif
 extern ANSC_HANDLE bus_handle;
 extern char   g_Subsystem[32];
 extern PCOSA_BACKEND_MANAGER_OBJECT g_pCosaBEManager;

@@ -1020,7 +1020,7 @@ INSTMSMT_PH2 -->
                         </parameter>
                         <parameter>
                             <name>OperatingChannelBandwidth</name>
-                            <type>string: Auto(0),20MHz(1),40MHz(2),80MHz(3),160MHz(4)</type>
+                            <type>string: Auto(0),20MHz(1),40MHz(2),80MHz(3),160MHz(4),320MHz(6)</type>
                             <syntax>uint32/mapped</syntax>
                             <writable>true</writable>
                         </parameter>

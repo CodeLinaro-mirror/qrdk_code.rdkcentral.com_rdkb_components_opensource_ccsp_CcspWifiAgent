@@ -98,6 +98,10 @@ extern ULONG g_currentBsUpdate;
 # define WEPKEY_TYPE_SET 3
 # define KEYPASSPHRASE_SET 2
 # define MFPCONFIG_OPTIONS_SET 3
+#if defined (_COSA_QCA_ARM_)
+# define MAX_BUF_SIZE 256
+# define _PLATFORM_IPQ9574_AL06 "RDP476"
+#endif
 
 
 extern void* g_pDslhDmlAgent;
@@ -1535,6 +1539,20 @@ WiFi_SetParamStringValue
         /* save update to backup */
         CosaDmlWiFi_SetRadioPower(TmpPower);
         
+#if defined (_COSA_QCA_ARM_)
+        int idx = 0;
+        for ( idx = 0; idx < pMyObject->RadioCount; idx++)
+        {
+            PCOSA_DML_WIFI_RADIO_FULL       pWifiRadio      = pMyObject->pRadio + idx;
+            PCOSA_DML_WIFI_RADIO_SINFO      pInfo = &pWifiRadio->StaticInfo;
+            PCOSA_DML_WIFI_RADIO_CFG        pWifiRadioCfg   = &pWifiRadio->Cfg;
+
+            if (wifi_getRadioTransmitPowerSupported(idx, pInfo->TransmitPowerSupported) != RETURN_OK) {
+                CcspTraceError(("Failed to get supported Transmit Power\n"));
+                return FALSE;
+            }
+        }
+#endif
         return TRUE;
     }
 	
@@ -3140,6 +3158,21 @@ Radio_GetParamStringValue
             }
         }
 #endif
+#if defined (_COSA_QCA_ARM_)
+        if (pWifiRadioFull->Cfg.OperatingStandards & COSA_DML_WIFI_STD_be )
+        {
+            if (AnscSizeOfString(buf) != 0)
+            {
+                rc = strcat_s(buf, sizeof(buf), ",be");
+                ERR_CHK(rc);
+            }
+            else
+            {
+                rc = strcat_s(buf, sizeof(buf), "be");
+                ERR_CHK(rc);
+            }
+        }
+#endif
         if ( AnscSizeOfString(buf) < *pUlSize)
         {
             rc = strcpy_s(pValue, *pUlSize, buf);
@@ -3332,6 +3365,21 @@ Radio_GetParamStringValue
             else
             {
                 rc = strcat_s(buf, sizeof(buf), "ax");
+                ERR_CHK(rc);
+            }
+        }
+#endif
+#if defined (_COSA_QCA_ARM_)
+        if (pWifiRadioFull->StaticInfo.SupportedStandards & COSA_DML_WIFI_STD_be )
+        {
+            if (AnscSizeOfString(buf) != 0)
+            {
+                rc = strcat_s(buf, sizeof(buf), ",be");
+                ERR_CHK(rc);
+            }
+            else
+            {
+                rc = strcat_s(buf, sizeof(buf), "be");
                 ERR_CHK(rc);
             }
         }
@@ -4002,6 +4050,16 @@ Radio_SetParamIntValue
 
     if (strcmp(ParamName, "X_CISCO_COM_MbssUserControl") == 0)
     {
+#ifdef WIFI_HAL_VERSION_3
+        if (wifiRadioOperParam->userControl == iValue)
+        {
+            return  TRUE;
+        }
+        /* save update to backup */
+        wifiRadioOperParam->userControl = iValue;
+        pWifiRadioFull->Cfg.isRadioConfigChanged = TRUE;
+        ccspWifiDbgPrint(CCSP_WIFI_TRACE, "%s userControl : %d\n", __FUNCTION__, wifiRadioOperParam->userControl);
+#else
         if ( pWifiRadioFull->Cfg.MbssUserControl == iValue )
         {
             return  TRUE;
@@ -4010,11 +4068,22 @@ Radio_SetParamIntValue
         /* save update to backup */
         pWifiRadioFull->Cfg.MbssUserControl = iValue;
         pWifiRadio->bRadioChanged = TRUE;
+#endif
         
         return TRUE;
     }
     if (strcmp(ParamName, "X_CISCO_COM_AdminControl") == 0)
     {
+#ifdef WIFI_HAL_VERSION_3
+        if (wifiRadioOperParam->adminControl == iValue)
+        {
+            return  TRUE;
+        }
+        /* save update to backup */
+        wifiRadioOperParam->adminControl = iValue;
+        pWifiRadioFull->Cfg.isRadioConfigChanged = TRUE;
+        ccspWifiDbgPrint(CCSP_WIFI_TRACE, "%s adminControl: %d\n", __FUNCTION__, wifiRadioOperParam->adminControl);
+#else
         if ( pWifiRadioFull->Cfg.AdminControl == iValue )
         {
             return  TRUE;
@@ -4023,6 +4092,7 @@ Radio_SetParamIntValue
         /* save update to backup */
         pWifiRadioFull->Cfg.AdminControl = iValue;
         pWifiRadio->bRadioChanged = TRUE;
+#endif
         
         return TRUE;
     }
@@ -4212,6 +4282,12 @@ Radio_SetParamUlongValue
     if (strcmp(ParamName, "Channel") == 0)
     {
 #ifdef WIFI_HAL_VERSION_3
+#if defined (_COSA_QCA_ARM_)
+        if (wifi_getRadioChannel(pWifiRadio->Radio.Cfg.InstanceNumber - 1, &wifiRadioOperParam->channel) != RETURN_OK) {
+            CcspTraceError(("RDK_LOG_INFO,%s: Failed to get channel\n",__FUNCTION__));
+            return FALSE;
+        }
+#endif
         if (wifiRadioOperParam->channel == uValue)
         {
             return  TRUE;
@@ -4827,6 +4903,17 @@ Radio_SetParamStringValue
 #ifdef WIFI_HAL_VERSION_3
         UNREFERENCED_PARAMETER(isBeaconRateUpdate);
 
+#if defined (_COSA_QCA_ARM_)
+        char platform_name[MAX_BUF_SIZE] = {0};
+        if (qca_GetModelName(platform_name) != ANSC_STATUS_SUCCESS) {
+            return FALSE;
+        }
+
+        if ((strncmp(platform_name, _PLATFORM_IPQ9574_AL06, strlen(_PLATFORM_IPQ9574_AL06)) == 0) && (instanceNumber == 1) &&
+            (strncmp(pString, "be", strlen("be")) == 0)){
+            return FALSE;
+        }
+#endif
         if (wifiStdStrToEnum(pString, &tmpHalWifiStd) != ANSC_STATUS_SUCCESS)
         {
             return FALSE;
@@ -5225,11 +5312,17 @@ Radio_Validate
 
     if (isValidTransmitPower(pWifiRadioFull->StaticInfo.TransmitPowerSupported, pWifiRadioFull->Cfg.TransmitPower) != TRUE)
     {
+#if defined (_COSA_QCA_ARM_)
+         if (pWifiRadioFull->Cfg.TransmitPower > 100) {
+#endif
          CcspTraceWarning(("********Radio Validate:Failed Transmit Power\n"));
          rc = strcpy_s(pReturnParamName, *puLength, "TransmitPower");
          ERR_CHK(rc);
          *puLength = AnscSizeOfString("TransmitPower");
          return FALSE;
+#if defined (_COSA_QCA_ARM_)
+         }
+#endif
     }    
 
     if( pWifiRadioFull->Cfg.BeaconInterval > 65535 )
@@ -7163,6 +7256,9 @@ SSID_SetParamStringValue
 #ifdef WIFI_HAL_VERSION_3
         rc = STRCPY_S_NOCLOBBER( vapInfo->vap_name, sizeof(vapInfo->vap_name), pString );
         ERR_CHK(rc);
+#if defined (_COSA_QCA_ARM_)
+        pWifiSsid->SSID.Cfg.isSsidChanged = TRUE;
+#endif
 #else
         rc = STRCPY_S_NOCLOBBER( pWifiSsid->SSID.Cfg.Alias, sizeof(pWifiSsid->SSID.Cfg.Alias), pString );
         ERR_CHK(rc);
@@ -9262,6 +9358,16 @@ AccessPoint_SetParamBoolValue
     }
     if (strcmp(ParamName, "X_CISCO_COM_BssHotSpot") == 0)
     {
+#ifdef WIFI_HAL_VERSION_3
+        if ( vapInfo->u.bss_info.bssHotspot == bValue )
+        {
+            return TRUE;
+        }
+
+        /* save update to backup */
+        vapInfo->u.bss_info.bssHotspot = bValue;
+        pWifiAp->AP.isApChanged = TRUE;
+#else
         if ( pWifiAp->AP.Cfg.BssHotSpot == bValue )
         {
             return  TRUE;
@@ -9269,6 +9375,7 @@ AccessPoint_SetParamBoolValue
         /* save update to backup */
         pWifiAp->AP.Cfg.BssHotSpot = bValue;
         pWifiAp->bApChanged = TRUE;
+#endif
         return TRUE;
     }
     if (strcmp(ParamName, "X_CISCO_COM_KickAssocDevices") == 0)
@@ -9551,6 +9658,29 @@ AccessPoint_SetParamIntValue
     /* check the parameter name and set the corresponding value */
     if (strcmp(ParamName, "X_CISCO_COM_WmmNoAck") == 0)
     {
+#ifdef WIFI_HAL_VERSION_3
+        ULONG apIndex = pWifiAp->AP.Cfg.InstanceNumber;
+        if (apIndex == 0)
+        {
+            CcspWifiTrace(("RDK_LOG_ERROR, %s pWifiAp->AP.Cfg.InstanceNumber equal to zero:\n", __FUNCTION__));
+            return FALSE;
+        }
+        apIndex--;
+
+        wifi_vap_info_t * vapInfo = getVapInfo(apIndex);
+        if (vapInfo == NULL)
+        {
+            CcspWifiTrace(("RDK_LOG_ERROR, %s Unable to get VAP info for apIndex:%lu\n", __FUNCTION__, apIndex));
+            return FALSE;
+        }
+        if ( vapInfo->u.bss_info.wmmNoAck == iValue )
+        {
+            return TRUE;
+        }
+        /* save update to backup */
+        vapInfo->u.bss_info.wmmNoAck = iValue;
+        pWifiAp->AP.isApChanged = TRUE;
+#else
         if ( pWifiAp->AP.Cfg.WmmNoAck == iValue )
         {
             return  TRUE;
@@ -9558,6 +9688,7 @@ AccessPoint_SetParamIntValue
         /* save update to backup */
         pWifiAp->AP.Cfg.WmmNoAck = iValue;
         pWifiAp->bApChanged = TRUE;
+#endif
 
         return TRUE;
     }
@@ -11461,6 +11592,9 @@ Security_SetParamBoolValue
 		if ( TRUE == pWifiApSec->Cfg.bReset )
 		{
 			pWifiAp->bSecChanged	 = TRUE;
+#if defined (_COSA_QCA_ARM_)
+            pWifiApSec->isSecChanged = TRUE;
+#endif
 
 		}
 		return TRUE;		
