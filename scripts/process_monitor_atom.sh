@@ -902,11 +902,19 @@ interface=1
        fi
 	
 	#Checking the ntpd is running or not in ATOM
-	NTPD_PID=`pidof ntpd`
-	if [ "$NTPD_PID" = "" ] && [ $uptime -gt 900 ]; then
-			echo_t "RDKB_PROCESS_CRASHED : NTPD is not running in ATOM, restarting NTPD"
-			systemctl restart ntpc.service
-			#ntpd -p $ARM_INTERFACE_IP
+	 if [ "$(syscfg get chrony_enabled)" = "true" ]; then
+		CHRONYD_PID=`pidof chronyd`
+		if [ "$CHRONYD_PID" = "" ] && [ $uptime -gt 900 ]; then
+				echo_t "RDKB_PROCESS_CRASHED : chronyd is not running in ATOM, restarting chronyd"
+				sysevent set chronyd-restart
+		fi
+	else
+		NTPD_PID=`pidof ntpd`
+		if [ "$NTPD_PID" = "" ] && [ $uptime -gt 900 ]; then
+				echo_t "RDKB_PROCESS_CRASHED : NTPD is not running in ATOM, restarting NTPD"
+				systemctl restart ntpc.service
+				#ntpd -p $ARM_INTERFACE_IP
+		fi
 	fi
 
         
